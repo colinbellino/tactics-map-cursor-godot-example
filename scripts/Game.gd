@@ -5,9 +5,7 @@ onready var camera_rig : Spatial = get_node("%Camera Rig")
 onready var gridmap : GridMap = get_node("%GridMap")
 onready var cursor : Spatial = get_node("%Cursor")
 onready var highlight : Spatial = get_node("%Highlight")
-const unit_prefab : String = "res://prefabs/entity.tscn"
-const projectile_prefab : String = "res://prefabs/entity.tscn"
-const wall_prefab : String = "res://prefabs/wall_0.tscn"
+onready var highlight_mesh_instance : MeshInstance = highlight.get_node("MeshInstance")
 
 const MOVE_SPEED : float = 10.0
 const MOVE_RANGE : float = 80.0
@@ -81,6 +79,14 @@ func _process(_delta: float) -> void:
         gridmap.visible = !gridmap.visible
         print("Map: %s" % ("ENABLED" if gridmap.visible else "DISABLED"))
 
+    if Input.is_action_just_released("debug_3"):
+        load_level(0)
+        move_cursor(State.cursor_position)
+
+    if Input.is_action_just_released("debug_4"):
+        load_level(1)
+        move_cursor(State.cursor_position)
+
     if State.cursor_position != new_cursor_position:
         move_cursor(new_cursor_position)
 
@@ -99,6 +105,7 @@ func load_level(index: int) -> void:
         var cell_orientation : int = cells_dictionary[cell_position][1]
         gridmap.set_cell_item(int(cell_position.x), int(cell_position.y), int(cell_position.z), cell_id, cell_orientation)
 
+    print("Level %s loaded." % index)
 
 func move_cursor(new_cursor_position: Vector2) -> void:
     # Update cursor
@@ -146,9 +153,9 @@ func move_cursor(new_cursor_position: Vector2) -> void:
         mdt.set_material(highlight_material)
         mdt.commit_to_surface(highlight_mesh)
 
-        (highlight.find_node("MeshInstance") as MeshInstance).mesh = highlight_mesh
-        highlight.rotation = ORTHOGONAL_ANGLES[cell_orientation]
         highlight.transform.origin = cursor_world_position + Vector3(0.5, 0.5, 0.5)
+        highlight_mesh_instance.mesh = highlight_mesh
+        highlight_mesh_instance.rotation = ORTHOGONAL_ANGLES[cell_orientation]
 
         State.cursor_position = new_cursor_position
 

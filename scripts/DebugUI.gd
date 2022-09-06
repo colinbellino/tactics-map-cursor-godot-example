@@ -23,7 +23,7 @@ func _draw() -> void:
         "Shortcuts": {
             "F1": "Toggle debug menu",
             "F2": "Toggle world",
-            "F/F4": "Change level",
+            "F3/F4": "Change level",
             "WASD": "Move cursor",
             "Q/E": "Rotate camera",
         },
