@@ -160,8 +160,8 @@ func move_cursor(new_cursor_position: Vector2) -> void:
                 else:
                     mdt.set_vertex(i, Vector3.ZERO)
 
-        mdt.set_material(highlight_material)
-        mdt.commit_to_surface(highlight_mesh)
+            mdt.set_material(highlight_material)
+            mdt.commit_to_surface(highlight_mesh)
 
         highlight.transform.origin = cursor_world_position + Vector3(0.5, 0.5, 0.5)
         highlight_mesh_instance.mesh = highlight_mesh
