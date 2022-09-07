@@ -132,7 +132,7 @@ func move_cursor(new_cursor_position: Vector2) -> void:
         # https://docs.godotengine.org/en/stable/classes/class_meshdatatool.html
 
         # Update cell highlight
-        var cell_mesh := gridmap.mesh_library.get_item_mesh(cell_id)
+        var cell_mesh : Mesh = gridmap.mesh_library.get_item_mesh(cell_id)
 
         var highlight_material := SpatialMaterial.new()
         highlight_material.albedo_color = Color.yellow
@@ -140,7 +140,17 @@ func move_cursor(new_cursor_position: Vector2) -> void:
         var mdt = MeshDataTool.new()
         var highlight_mesh := Mesh.new()
         for surface_index in range(0, cell_mesh.get_surface_count()):
-            mdt.create_from_surface(cell_mesh, surface_index)
+            var array_mesh := ArrayMesh.new()
+
+            if cell_mesh is ArrayMesh:
+                array_mesh = cell_mesh
+            elif cell_mesh is PrimitiveMesh:
+                array_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, cell_mesh.get_mesh_arrays())
+            else:
+                printerr("Mesh type not handled")
+                return
+
+            mdt.create_from_surface(array_mesh, surface_index)
 
             for i in range(mdt.get_vertex_count()):
                 var normal : Vector3 = mdt.get_vertex_normal(i)
